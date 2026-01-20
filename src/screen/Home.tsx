@@ -76,7 +76,11 @@ export default function Home() {
 
   return (
     <View style={{ flex: 1 }}>
-      <Header title="Sabores do Pará" />
+      {/* ✅ HEADER COM LOGO CENTRALIZADO */}
+      <Header
+        title="American Kitchen"
+        logo={require("../../assets/logo3.png")}
+      />
 
       <ScrollView
         showsVerticalScrollIndicator={false}
@@ -94,6 +98,7 @@ export default function Home() {
           />
         </View>
 
+        {/* TÍTULO */}
         <Text style={homeStyles.sectionTitle}>Receitas</Text>
 
         {/* ⏳ LOADING */}
@@ -113,7 +118,7 @@ export default function Home() {
               activeOpacity={0.9}
               onPress={() =>
                 navigation.navigate("Receita", {
-                  idMeal: item.idMeal, // 🔴 ESSENCIAL
+                  idMeal: item.idMeal,
                 })
               }
             >
@@ -143,24 +148,8 @@ export default function Home() {
         )}
       </ScrollView>
 
+      {/* 🔽 MENU INFERIOR */}
       <BottomMenu items={menuItems} />
     </View>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

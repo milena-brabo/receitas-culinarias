@@ -1,56 +1,60 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import React from "react";
+import { View, Text, TouchableOpacity, Image } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { styles } from "../screen/styles";
 
 interface HeaderProps {
   title: string;
-  onBack?: () => void; // função opcional para botão voltar
-  onMenu?: () => void; // função opcional para menu
+  logo?: any;
+  onBack?: () => void;
+  onMenu?: () => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ title, onBack, onMenu }) => {
+const Header: React.FC<HeaderProps> = ({
+  title,
+  logo,
+  onBack,
+  onMenu,
+}) => {
   return (
     <View style={styles.header}>
-      {/* LADO ESQUERDO */}
-      {onBack ? (
-        <TouchableOpacity onPress={onBack}>
-          <Ionicons name="arrow-back" size={26} color="#fff" />
-        </TouchableOpacity>
-      ) : (
-        <View style={{ width: 26 }} />
-      )}
+      {/* BLOCO ESQUERDO: LOGO + TÍTULO */}
+      <View style={{ flexDirection: "row", alignItems: "center", flex: 1 }}>
+        {onBack ? (
+          <TouchableOpacity onPress={onBack}>
+            <Ionicons name="arrow-back" size={26} color="#FFFFFF" />
+          </TouchableOpacity>
+        ) : logo ? (
+          <Image
+            source={logo}
+            style={{
+              width: 36,
+              height: 36,
+              resizeMode: "contain",
+              marginRight: 10, // 🔥 aproxima do texto
+            }}
+          />
+        ) : null}
 
-      {/* TÍTULO */}
-      <Text style={styles.headerTitle}>{title}</Text>
+        <Text
+          style={[
+            styles.headerTitle,
+            { textAlign: "left" }, // 🔥 alinha com a logo
+          ]}
+          numberOfLines={1}
+        >
+          {title}
+        </Text>
+      </View>
 
-      {/* LADO DIREITO */}
-      {onMenu ? (
+      {/* MENU DIREITO */}
+      {onMenu && (
         <TouchableOpacity onPress={onMenu}>
-          <Ionicons name="menu" size={28} color="#fff" />
+          <Ionicons name="menu" size={28} color="#FFFFFF" />
         </TouchableOpacity>
-      ) : (
-        <View style={{ width: 28 }} />
       )}
     </View>
   );
 };
 
 export default Header;
-
-const styles = StyleSheet.create({
-  header: {
-    height: 60,
-    backgroundColor: '#FB6D01',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 16,
-  },
-  headerTitle: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-});
-
-

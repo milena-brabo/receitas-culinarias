@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   Share,
   Alert,
+  StatusBar,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation, useRoute } from "@react-navigation/native";
@@ -57,13 +58,13 @@ export default function Receitas() {
     setFavorito(isFavorito(idMeal));
   };
 
-  const link ="exp://172.28.123.127:8081";
+  const link = `https://www.themealdb.com/meal/${idMeal}`;
+
   const compartilharReceita = async () => {
-    
     try {
       await Share.share({
-        // message: `🍽️ Receita: ${receita.strMeal}\n\n${receita.strInstructions}`,
-        message: `🍽️ Receita: ${receita.strMeal}\n\n${link}`,
+        message: link,
+        url: link,
       });
     } catch {
       Alert.alert("Erro", "Não foi possível compartilhar");
@@ -84,12 +85,11 @@ export default function Receitas() {
   }
 
   const ingredientes = () => {
-    if (!receita) return [];
     const lista: string[] = [];
     for (let i = 1; i <= 20; i++) {
       const ingrediente = receita[`strIngredient${i}`];
       const medida = receita[`strMeasure${i}`];
-      if (ingrediente && ingrediente.trim() !== "") {
+      if (ingrediente && ingrediente.trim()) {
         lista.push(`${medida ?? ""} ${ingrediente}`.trim());
       }
     }
@@ -98,34 +98,46 @@ export default function Receitas() {
 
   return (
     <View style={styles.container}>
-      <Header title={receita.strMeal} onBack={() => navigation.goBack()} />
+      <StatusBar backgroundColor="#204E20" barStyle="light-content" />
+      <Header title="Receita" onBack={() => navigation.goBack()} />
 
       <ScrollView contentContainerStyle={{ paddingBottom: 120 }}>
-        <Image source={{ uri: receita.strMealThumb }} style={styles.image} />
+        {/* IMAGEM */}
+        <View>
+          <Image source={{ uri: receita.strMealThumb }} style={styles.image} />
 
-        <View style={styles.titleOverlay}>
-          <Text style={styles.title}>{receita.strMeal}</Text>
-          <View style={styles.icons}>
-            <TouchableOpacity onPress={favoritarReceita}>
-              <Ionicons
-                name="heart"
-                size={22}
-                color={favorito ? "red" : "#fff"} // vermelho se favoritado
-              />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={compartilharReceita}>
-              <Ionicons name="share-social-outline" size={22} color="#fff" />
-            </TouchableOpacity>
+          {/* CARD EMBAIXO DA IMAGEM */}
+          <View style={styles.infoCard}>
+            <Text style={styles.recipeTitle}>{receita.strMeal}</Text>
+
+            <View style={styles.icons}>
+              <TouchableOpacity onPress={favoritarReceita}>
+                <Ionicons
+                  name={favorito ? "heart" : "heart-outline"}
+                  size={22}
+                  color={favorito ? "red" : "white"}
+                />
+              </TouchableOpacity>
+
+              <TouchableOpacity onPress={compartilharReceita}>
+                <Ionicons
+                  name="share-social-outline"
+                  size={22}
+                  color="white"
+                />
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
 
+        {/* CONTEÚDO */}
         <View style={styles.content}>
           <Text style={styles.sectionTitle}>Ingredientes</Text>
           {ingredientes().map((item, index) => (
             <Text key={index} style={styles.text}>• {item}</Text>
           ))}
 
-          <Text style={styles.sectionTitle}>Modo de preparo</Text>
+          <Text style={styles.sectionTitle}>Preparo</Text>
           <Text style={styles.text}>{receita.strInstructions}</Text>
         </View>
       </ScrollView>
@@ -136,27 +148,62 @@ export default function Receitas() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#FB6D01" },
-  loading: { flex: 1, alignItems: "center", justifyContent: "center" },
-  image: { width: "100%", height: 240 },
-  titleOverlay: {
-    position: "absolute",
-    top: 200,
-    left: 16,
-    right: 16,
+  container: {
+    flex: 1,
+    backgroundColor: "#FB6D01",
+  },
+
+  loading: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
+  image: {
+    width: "100%",
+    height: 260,
+  },
+
+  infoCard: {
+    backgroundColor: "rgba(0,0,0,0.55)",
+    marginHorizontal: 12,
+    marginTop: -28, // 👈 sobrepõe a imagem
+    borderRadius: 16,
+    padding: 14,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
   },
-  title: { color: "#fff", fontSize: 20, fontWeight: "bold" },
-  icons: { flexDirection: "row", gap: 12 },
-  content: { marginTop: 24, padding: 16 },
-  sectionTitle: { fontSize: 18, fontWeight: "bold", marginTop: 12, marginBottom: 6, color: "#000" },
-  text: { fontSize: 14, marginBottom: 6, color: "#000", lineHeight: 20 },
+
+  recipeTitle: {
+    color: "#fff",
+    fontSize: 18,
+    fontWeight: "bold",
+    flex: 1,
+    marginRight: 12,
+  },
+
+  icons: {
+    flexDirection: "row",
+    gap: 14,
+  },
+
+  content: {
+    padding: 16,
+  },
+
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginTop: 14,
+    marginBottom: 6,
+    color: "#000",
+  },
+
+  text: {
+    fontSize: 14,
+    color: "#000",
+    marginBottom: 6,
+    lineHeight: 20,
+  },
 });
-
-
-
-
-
-

@@ -35,7 +35,6 @@ export const styles = StyleSheet.create({
     backgroundColor: "#1F4D2B",
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
     paddingHorizontal: 16,
   },
 
@@ -101,4 +100,45 @@ export const styles = StyleSheet.create({
     borderBottomLeftRadius: 15,
     borderBottomRightRadius: 15,
   },
+    /* ===== FAVORITOS ===== */
+
+  card: {
+    height: 180,
+    marginHorizontal: 20,
+    marginBottom: 16,
+    justifyContent: "space-between",
+  },
+
+  cardImage: {
+    borderRadius: 16,
+  },
+
+  heart: {
+    alignSelf: "flex-end",
+    margin: 12,
+    backgroundColor: "rgba(0,0,0,0.4)",
+    padding: 6,
+    borderRadius: 20,
+  },
+
+  titleContainer: {
+    backgroundColor: "rgba(0,0,0,0.5)",
+    padding: 12,
+    borderBottomLeftRadius: 16,
+    borderBottomRightRadius: 16,
+  },
+
+  favoriteTitle: {
+    color: "#FFFFFF",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+
+  empty: {
+    textAlign: "center",
+    marginTop: 40,
+    fontSize: 16,
+    color: "#fff",
+  },
+
 });

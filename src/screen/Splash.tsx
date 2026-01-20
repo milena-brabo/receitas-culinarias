@@ -9,7 +9,7 @@ export default function SplashScreen() {
   useEffect(() => {
     const timer = setTimeout(() => {
       navigation.replace("Home"); // vai para a Home e remove a Splash
-    }, 2000);
+    }, 8000);
 
     return () => clearTimeout(timer);
   }, []);
@@ -18,12 +18,12 @@ export default function SplashScreen() {
     <View style={styles.container}>
       <StatusBar backgroundColor="#204E20" barStyle="light-content" />
       <Image
-        source={require("../../assets/logo2.png")}
+        source={require("../../assets/logo3.png")}
         style={styles.logo}
         resizeMode="contain"
       />
       <Text style={styles.subtitle}>
-        Tradição e sabores populares
+        O melhor da cozinha americana na sua casa.
       </Text>
     </View>
   );

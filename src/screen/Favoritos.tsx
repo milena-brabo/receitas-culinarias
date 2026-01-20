@@ -1,67 +1,100 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, Image } from "react-native";
+import {
+  View,
+  Text,
+  FlatList,
+  TouchableOpacity,
+  ImageBackground,
+} from "react-native";
 import { useNavigation, useIsFocused } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 
 import Header from "../components/Header";
 import BottomMenu, { MenuItem } from "../components/BottomMenu";
-import { listarFavoritos, toggleFavorito, isFavorito } from "../../services/favoritos";
+import { listarFavoritos, toggleFavorito } from "../../services/favoritos";
+import { styles } from "./styles"; // ✅ usa seu styles.ts
 
 export default function Favoritos() {
   const navigation = useNavigation<any>();
-  const isFocused = useIsFocused(); // detecta quando a tela volta a ficar ativa
+  const isFocused = useIsFocused();
   const [favoritos, setFavoritos] = useState<any[]>([]);
 
-  // Atualiza a lista sempre que a tela for exibida
   useEffect(() => {
     setFavoritos(listarFavoritos());
   }, [isFocused]);
 
-  // Alterna favorito (adiciona ou remove)
-  const alternarFavorito = (item: any) => {
-    toggleFavorito(item); // remove ou adiciona
-    setFavoritos(listarFavoritos()); // atualiza a lista
+  const removerFavorito = (item: any) => {
+    toggleFavorito(item);
+    setFavoritos(listarFavoritos());
   };
 
   const menuItems: MenuItem[] = [
-    { icon: "home-outline", label: "Início", onPress: () => navigation.navigate("Home") },
-    { icon: "heart-outline", label: "Favoritos", onPress: () => {} },
+    {
+      icon: "home-outline",
+      label: "Início",
+      onPress: () => navigation.navigate("Home"),
+    },
+    {
+      icon: "heart",
+      label: "Favoritos",
+      onPress: () => {},
+    },
   ];
 
   const renderItem = ({ item }: { item: any }) => (
-    <View style={styles.itemContainer}>
-      {/* Clicar na receita abre a tela Receita */}
-      <TouchableOpacity
-        style={styles.item}
-        onPress={() => navigation.navigate("Receita", { idMeal: item.idMeal })}
+    <TouchableOpacity
+      activeOpacity={0.9}
+      onPress={() =>
+        navigation.navigate("Receita", { idMeal: item.idMeal })
+      }
+    >
+      <ImageBackground
+        source={{ uri: item.strMealThumb }}
+        style={styles.recipeCard}        // ✅ reutiliza
+        imageStyle={styles.recipeImage} // ✅ reutiliza
       >
-        <Image source={{ uri: item.strMealThumb }} style={styles.image} />
-        <Text style={styles.title}>{item.strMeal}</Text>
-      </TouchableOpacity>
+        {/* ❤️ ÍCONE FAVORITO */}
+        <TouchableOpacity
+          style={{
+            alignSelf: "flex-end",
+            margin: 10,
+            backgroundColor: "rgba(0,0,0,0.4)",
+            padding: 6,
+            borderRadius: 20,
+          }}
+          onPress={() => removerFavorito(item)}
+        >
+          <Ionicons name="heart" size={20} color="red" />
+        </TouchableOpacity>
 
-      {/* Coração para remover favorito */}
-      <TouchableOpacity onPress={() => alternarFavorito(item)}>
-        <Ionicons
-          name="heart"
-          size={24}
-          color={isFavorito(item.idMeal) ? "red" : "#fff"} // vermelho se favoritado
-        />
-      </TouchableOpacity>
-    </View>
+        {/* 🔽 NOME COM FUNDO ESCURO */}
+        <Text style={styles.recipeTitle}>{item.strMeal}</Text>
+      </ImageBackground>
+    </TouchableOpacity>
   );
 
   return (
-    <View style={styles.container}>
-      <Header title="Favoritos" onBack={() => navigation.goBack()} />
+    <View style={{ flex: 1, backgroundColor: "#FB6D01" }}>
+      <Header title="Receitas Favoritas ❤️" />
 
       {favoritos.length === 0 ? (
-        <Text style={styles.empty}>Nenhum favorito ainda</Text>
+        <Text
+          style={{
+            textAlign: "center",
+            marginTop: 40,
+            color: "#fff",
+            fontSize: 16,
+          }}
+        >
+          Nenhuma receita favoritada 😕
+        </Text>
       ) : (
         <FlatList
           data={favoritos}
           keyExtractor={(item) => item.idMeal}
           renderItem={renderItem}
-          contentContainerStyle={{ padding: 16, paddingBottom: 120 }}
+          contentContainerStyle={{ paddingBottom: 120 }}
+          showsVerticalScrollIndicator={false}
         />
       )}
 
@@ -69,23 +102,3 @@ export default function Favoritos() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#FB6D01" },
-  itemContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 12,
-    justifyContent: "space-between",
-  },
-  item: { flexDirection: "row", alignItems: "center" },
-  image: { width: 60, height: 60, borderRadius: 8, marginRight: 12 },
-  title: { fontSize: 16, fontWeight: "bold", color: "#fff" },
-  empty: { fontSize: 16, textAlign: "center", marginTop: 32, color: "#fff" },
-});
-
-
-
-
-
-
